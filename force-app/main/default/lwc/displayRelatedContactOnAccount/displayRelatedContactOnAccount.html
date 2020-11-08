@@ -1,0 +1,202 @@
+<template>
+    <lightning-card>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col">
+                <span>
+                    <lightning-card title="Related Contacts" icon-name="standard:contact"> </lightning-card>
+                </span>
+            </div>
+            <div class="slds-col">
+                <span>
+                    <lightning-button variant="Neutral" label="Create Contact" icon-name="utility:record_create"
+                        icon-position="right" onclick={createContact}>
+                    </lightning-button>
+                </span>
+            </div>
+        </div>
+        <div class="slds-m-around_medium">
+            <table
+                class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped slds-text-align_centers">
+                <thead>
+                    <tr class="slds-text-align_center slds-line-height_reset">
+                        <th data-scope="col" title="Name " aria-label=" Name">
+                            <div class="slds-truncate"> NAME </div>
+                        </th>
+                        <th data-scope="col" title="Email">
+                            <div class="slds-truncate"> EMAIL </div>
+                        </th>
+                        <th data-scope="col" title="Email">
+                            <div class="slds-truncate"> IS PRIMARY </div>
+                        </th>
+                    </tr>
+                </thead>
+
+                <template if:true={bShowModal}>
+                    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                        aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                        <div class="slds-modal__container">
+
+                            <header class="slds-modal__header">
+                                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                    title="Close" onclick={closeModal}>
+                                    <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
+                                        size="small"></lightning-icon>
+                                </button>
+                                <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate"
+                                    if:false={isEditForm}>Create Contact</h2>
+                                <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate"
+                                    if:true={isEditForm}>
+                                    Update Record Values</h2>
+                            </header>
+                            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1"
+                                if:false={isEditForm}>
+                                <lightning-record-edit-form object-api-name="Contact" onsubmit={handleCreate}
+                                    onsuccess={handleSuccess}>
+                                    <lightning-messages>
+                                    </lightning-messages>
+                                    <lightning-input-field field-name="Name">
+                                    </lightning-input-field>
+                                    <lightning-output-field field-name="AccountId">
+                                    </lightning-output-field>
+                                    <div style="text-align:center">
+                                        <lightning-button class="slds-m-top_small" variant="brand" type="submit"
+                                            label="Create new">
+                                        </lightning-button>
+                                    </div>
+
+                                </lightning-record-edit-form>
+                            </div>
+                            <div if:true={isEditForm} class="slds-theme_default">
+                                <lightning-record-edit-form layout-type="Full" record-id={currentRecordId}
+                                    object-api-name="Contact" onsubmit={handleSubmit} onsuccess={handleSuccess}>
+                                    <lightning-messages></lightning-messages>
+                                    <lightning-output-field field-name="AccountId"></lightning-output-field>
+                                    <lightning-input-field field-name="FirstName"></lightning-input-field>
+                                    <lightning-input-field field-name="LastName"></lightning-input-field>
+                                    <lightning-input-field field-name="Email"></lightning-input-field>
+                                    <lightning-input-field field-name="Phone"></lightning-input-field><br />
+
+                                    <div style="text-align:center;">
+                                        <lightning-button class="slds-m-top_small" variant="brand" type="submit"
+                                            name="update" label="Update Record"></lightning-button>
+                                    </div>
+                                </lightning-record-edit-form><br />
+                                <div></div>
+                            </div>
+
+                            <!--- <footer class="slds-modal__footer" if:false={isEditForm}>
+                                <lightning-button class="slds-m-top_small" type="submit" label="Create new">
+                                </lightning-button>
+                            </footer>-->
+                        </div>
+                    </section>
+                    <div class="slds-backdrop slds-backdrop_open"></div>
+                </template>
+                <!-- <template if:true={bShowModal}>
+                    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                        aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                        <div class="slds-modal__container">
+
+                            <header class="slds-modal__header">
+                                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                    title="Close" onclick={closeModal}>
+                                    <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
+                                        size="small"></lightning-icon>
+                                </button>
+                                <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate"
+                                    if:true={isCreateCon}>
+                                    Create Contact</h2>
+                            </header>
+                            <div if:true={isCreateCon} class="slds-theme_default">
+                                <lightning-record-edit-form object-api-name="Contact" onsuccess={handleCreate}
+                                    onsubmit={handleSubmit}>
+                                    <lightning-messages>
+                                    </lightning-messages>
+                                    <lightning-input-field field-name="Name">
+                                    </lightning-input-field>
+                                    <lightning-output-field field-name="AccountId" value={recordId}>
+                                    </lightning-output-field>
+                                    <div style="text-align:center;">
+                                        <lightning-button class="slds-m-top_small" type="submit" label="Create new">
+                                        </lightning-button>
+                                    </div>
+                                </lightning-record-edit-form> <br />
+                            </div>
+                        </div>
+                    </section>
+                </template>-->
+                <template if:true={contacts.data}>
+                    <template for:each={contacts.data} for:item="contact">
+                        <tr class="slds-line-height_reset slds-hint-parent" key={contact.Id}>
+                            <th data-scope="col" title="Name " aria-label="Name">
+                                <div class="slds-truncate" title={contact.Id}>
+                                    <a>
+                                        <lightning-button variant="base" label={contact.Name} title={contact.Name}
+                                            value={contact.Id} class="slds-tile__title slds-truncate"
+                                            onclick={handleContactView}>
+                                        </lightning-button>
+
+                                    </a>
+                                </div>
+                            </th>
+                            <th data-scope="col" title="Email">
+                                <div class="slds-truncate" title={contact.Id}>
+                                    {contact.Email}
+                                </div>
+                            </th>
+                            <th data-scope="col" title="Email">
+                                <div class="slds-truncate" title={contact.Id}>
+
+                                    <lightning-input type="checkbox" data-element="checkbox" value={contact.Id}
+                                        onchange={handleCheckBoxChange} checked={contact.Guide1__Is_Primary_Contact__c}>
+                                    </lightning-input>
+
+                                </div>
+                            </th>
+
+                            <th data-scope="col">
+                                <div class="slds-truncate">
+                                    <a>
+                                        <lightning-button variant="neutral" label="Edit" icon-name="utility:edit"
+                                            icon-position="right" value={contact.Id} onclick={editCurrentRecord}>
+                                        </lightning-button>
+                                    </a>
+                                </div>
+                            </th>
+                            <th data-scope="col">
+                                <div class="slds-truncate">
+                                    <a>
+                                        <lightning-button variant="destructive" label="Delete"
+                                            icon-name="utility:delete" icon-position="right" value={contact.Id}
+                                            onclick={handleDelete}>
+                                        </lightning-button>
+                                    </a>
+                                </div>
+                            </th>
+                        </tr>
+                        <!-- <li class="slds-item" style="list-style-type: none;" key={contact.Id}>
+
+                            <article class="slds-tile slds-tile_board">
+                                <lightning-button variant="base" label={contact.Name} title={contact.Name}
+                                    value={contact.Id} class="slds-tile__title slds-truncate"
+                                    onclick={handleContactView}>
+                                </lightning-button>
+                                <div class="slds-tile__detail">
+                                    <ul class="slds-list_horizontal slds-has-dividers_right">
+                                        <li class="slds-item">Title: {contact.Title}</li>
+                                    </ul>
+                                    <ul class="slds-list_horizontal slds-has-dividers_right">
+                                        <li class="slds-item">Phone: {contact.Phone}</li>
+                                    </ul>
+                                    <ul class="slds-list_horizontal slds-has-dividers_right">
+                                        <li class="slds-item">Email: {contact.Email}</li>
+                                    </ul>
+                                </div>
+                            </article>
+                        </li> -->
+                    </template>
+                </template>
+            </table>
+        </div>
+    </lightning-card>
+</template>

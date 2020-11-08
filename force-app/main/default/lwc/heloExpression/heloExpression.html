@@ -1,0 +1,21 @@
+<!--
+  @Component Name     : heloExpression.html
+  @Description        : 
+  @Author             : ChangeMeIn@UserSettingsUnder.SFDoc
+  @Group              : 
+  @Last Modified By   : ChangeMeIn@UserSettingsUnder.SFDoc
+  @Last Modified On   : 27/5/2019, 11:08:16 AM
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    27/5/2019, 11:08:16 AM   ChangeMeIn@UserSettingsUnder.SFDoc     Initial Version
+-->
+<template>
+    <div class="slds-m-around_medium">
+        <lightning-input name ='firstName' label="First Name" onchange={handleChange}></lightning-input>
+        <lightning-input name = 'lastname' label="last Name" onchange={handleChange}></lightning-input>
+        <p class="slds-m-top_medium"> UpperCased Full Name: {uppercasedFullName}</p>
+    </div>
+    
+</template>

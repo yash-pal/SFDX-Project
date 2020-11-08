@@ -1,0 +1,44 @@
+<apex:page standardController="Contact" recordSetVar="contacts"  sidebar="false" >
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script>
+        function checkboxes(cb)
+    {
+        if($("input:checkbox[id*=looped]:checked").length > 1)
+        {
+            alert('test');
+            
+            $(cb).removeAttr('checked');
+            return false; 
+        }
+        else
+        {
+            return true;
+        } 
+    };
+    
+    var $j = jQuery.noConflict();
+    $j(document).ready(function() {  
+        $j('input:radio[name$=IdRedioBtnTemplateHostingFee]').change(function(){ 
+            $j('input:radio[name$=IdRedioBtnHostingBundles]').removeAttr('checked');
+        });
+        $j('input:radio[name$=IdRedioBtnHostingBundles]').change(function(){ 
+            $j('input:radio[name$=IdRedioBtnTemplateHostingFee]').removeAttr('checked');
+        });        										
+    });
+    </script>
+    <apex:form >
+        <apex:pageBlock title="Approval List">
+            <apex:pageBlockTable value="{!contacts}" var="con">
+                <apex:column value="{!con.Id}"/>
+                <apex:column value="{!con.salutation}"/>
+                <apex:column value="{!con.FirstName}"/>
+                <apex:column value="{!con.LastName}"/>
+                <apex:column headervalue=" Action">
+                    <input type="radio" id="approve" name="Approve"  value="Approve" onClick="checkboxes(this);"/>Approve
+                    <input type="radio" id="reject" name="Reject"   value="Reject" onClick="checkboxes(this);"/> Reject <b/>
+                    <apex:commandButton value="send"  onclick="('{!con.Id}')" rerender="tstpopup,showPageMessage" />
+                </apex:column>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+    </apex:form>  
+</apex:page>

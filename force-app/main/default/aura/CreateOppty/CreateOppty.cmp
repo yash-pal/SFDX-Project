@@ -1,0 +1,18 @@
+<!-- ,force:lightningQuickActionWithoutHeader -->
+<aura:component implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickActionWithoutHeader" access="global" controller="CreateOppty">
+    <aura:attribute name="oppty" type="Object" default="{}" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <div class="slds-form--stacked">
+        <div class="slds-form-element">
+            <label class="slds-form-element__label" for="opptyName">Opportunity Name</label>
+            <div class="slds-form-element__control">
+                <ui:inputText class="slds-input" aura:id="opptyName" value="{!v.oppty.Name}" required="true" placeholder="Leave empty to use default value of 'Upsell'"/>
+            </div>
+        </div>
+        <div class="slds-form-element">
+            <ui:button class="slds-button slds-button--neutral" press="{!c.cancel}" label="Cancel" />
+            <ui:button class="slds-button slds-button--brand" press="{!c.saveOppty}" label="Create new upsell Opportunity" />
+        </div>
+    </div>
+</aura:component>

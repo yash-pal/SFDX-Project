@@ -1,0 +1,11 @@
+<apex:page standardStylesheets="false" standardController="Account" recordSetVar="accounts" tabStyle="account">
+    <div class="slds-scope">
+        <apex:pageBlock >
+            <apex:pageBlockTable value="{!accounts}" var="a">
+                <apex:column headerValue="{!$ObjectType.Account.Fields.Name.Label}">
+                    <apex:outputLink value="{!URLFOR($Action.Account.View, a.id)}">{!a.name}</apex:outputLink>
+                </apex:column>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+    </div>
+</apex:page>

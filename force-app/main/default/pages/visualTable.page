@@ -1,0 +1,38 @@
+<apex:page controller="contactValidation">
+    <script type="text/javascript">     
+    function oneCheckbox(obj)
+    {
+        if (obj.checked)
+        {
+            var inputs = document.getElementsByTagName("input");
+            
+            for (var i = 0; i < inputs.length; i++)
+            {
+                var oInput = inputs[i];
+                if (oInput.type == "checkbox" && oInput.checked && oInput != obj)
+                {
+                    oInput.checked = false; 
+                }  
+            }
+        }
+        
+    }
+    </script> 
+    <apex:form >
+        <apex:pageBlock title="Approval List">
+             <apex:pageBlockTable value="{!wrpperList}" var="con">
+                <apex:outputfield value="{!con.cont.name}"/>
+                <apex:column value="{!con.cont.Id}" />
+                <apex:column value="{!con.cont.salutation}"/>
+                <apex:column value="{!con.cont.FirstName}"/>
+                <apex:column value="{!con.cont.LastName}"/>
+                <apex:column headerValue="Action" >
+                    <apex:inputCheckbox value="{!con.wrp}" id="Approved" onchange="oneCheckbox(this);"/><apex:outputLabel value="Approve" for="Approved"/>
+                    <apex:inputCheckbox value="{!con.wrp}" id="Rejected" onchange="oneCheckbox(this);"/><apex:outputLabel value="Reject" for="Rejected"/>   <b/>
+                    <apex:commandButton value="send" action="{!Action}" style="margin-left:70;"  />
+                </apex:column>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+    </apex:form>
+    
+</apex:page>

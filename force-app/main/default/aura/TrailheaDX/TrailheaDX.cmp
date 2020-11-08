@@ -1,0 +1,8 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" access="global" >
+
+ <aura:attribute name="myURL" type="String" default="https://www.salesforce.com/campaign/destination-success/overview/"/>
+
+    
+    <ui:outputURL value="{!v.myURL}" label="DestinationSuccess" target="_blank"/>
+    
+</aura:component>

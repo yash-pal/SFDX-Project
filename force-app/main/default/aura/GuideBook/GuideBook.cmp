@@ -1,0 +1,5 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" access="global" >
+	<ui:inputCheckbox aura:id="checkbox" label="Synced records" change="{!c.GuideBookController}"/>
+	<p><ui:outputText class="result" aura:id="checkResult" value="Manually synced" /></p>
+	<ui:outputCheckbox aura:id="output" value="{!v.myBool}"/>
+</aura:component>

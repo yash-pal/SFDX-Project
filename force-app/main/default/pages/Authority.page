@@ -1,0 +1,49 @@
+<apex:page sidebar="false"  controller="emailHelper">
+    
+    <script type="text/javascript">     
+    function oneCheckbox(obj)
+    {
+        if (obj.checked)
+        {
+            var inputs = document.getElementsByTagName("input");
+            
+            for (var i = 0; i < inputs.length; i++)
+            {
+                var oInput = inputs[i];
+                if (oInput.type == "checkbox" && oInput.checked && oInput != obj)
+                {
+                    oInput.checked = false; 
+                }  
+            }
+        }
+        
+        
+    }
+    </script> 
+    
+    <apex:form >
+        
+        <apex:pageBlock title="Approval List">
+            <apex:pageBlockTable value="{!wrpperList}" var="con">
+                <apex:outputfield value="{!con.cont.name}"/>
+                <apex:column value="{!con.cont.Id}" />
+                <apex:column value="{!con.cont.salutation}"/>
+                <apex:column value="{!con.cont.FirstName}"/>
+                <apex:column value="{!con.cont.LastName}"/>
+                <apex:column headerValue="Action" >
+                    <apex:inputCheckbox value="{!con.chk}" id="Approved" onchange="oneCheckbox(this);"/><apex:outputLabel value="Approve" for="Approved"/>
+                    <apex:inputCheckbox value="{!con.chk2}" id="Rejected" onchange="oneCheckbox(this);"/><apex:outputLabel value="Reject" for="Rejected"/>
+<b/>
+                    <apex:commandButton value="send" action="{!SavePage}" style="margin-left:70;"  />
+                </apex:column>
+            </apex:pageBlockTable>
+            <!--<apex:panelGrid columns="5"> Page : 
+                <apex:commandLink action="{!first}">FIRST</apex:commandLink>
+                <apex:commandLink action="{!previous}">PREVIOUS</apex:commandLink>
+                <apex:commandLink action="{!next}">NEXT</apex:commandLink> 
+                <apex:commandLink action="{!last}">LAST</apex:commandLink>
+            </apex:panelGrid>-->
+            
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>
