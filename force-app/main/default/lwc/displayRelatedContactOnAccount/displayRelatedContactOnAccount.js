@@ -6,6 +6,12 @@ import updateCheckbox from "@salesforce/apex/AccountContactController.updateCont
 import { NavigationMixin } from "lightning/navigation";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import { refreshApex } from "@salesforce/apex";
+import { createRecord } from "lightning/uiRecordApi";
+import CONTACT_OBJECT from "@salesforce/schema/Contact";
+import NAME_FIELD from "@salesforce/schema/Contact.LastName";
+import EMAIL_FIELD from "@salesforce/schema/Contact.Email";
+import PHONE_FIELD from "@salesforce/schema/Contact.Phone";
+import ACCOUNTID_FIELD from "@salesforce/schema/Contact.AccountId";
 import { updateRecord, getRecordNotifyChange } from "lightning/uiRecordApi";
 //import { registerListener, fireEvent } from "c/pubsub";
 import { encodeDefaultFieldValues } from "lightning/pageReferenceUtils";
@@ -24,12 +30,23 @@ export default class displayRelatedContactOnAccount extends NavigationMixin(
   @track currentRecordId;
   @track isEditForm = false;
   @track isCreateCon = false;
+  @track accountRecordId;
+
+  @track contactId;
+  //Account Id passed from Parent to Child Component using API decorator.
+  @api accountid;
+
+  name = "";
+  email = "";
+  phone = "";
 
   @wire(findContacts, { searchKey: "$searchKey" })
   contacts;
 
   connectedCallback() {
     this.searchKey = this.recordId;
+
+    this.currentRecordId = this.recordId;
     /*findContacts({ searchKey: this.searchKey }).then((data) => {
       this.contactss = data;
       alert("aasd" + JSON.stringify(this.contactss[0]));
@@ -106,9 +123,12 @@ export default class displayRelatedContactOnAccount extends NavigationMixin(
     Promise.all(promises).then((result) => {});*/
   }
 
-  createContact() {
+  createContactss(event) {
     this.bShowModal = true;
+    alert("sahbdh" + this.recordId);
     this.isCreateCon = true;
+
+    //this.accountRecordId = this.recordId;
     /*const defaultValues = encodeDefaultFieldValues({
       AccountId: this.searchKey
     });
@@ -132,9 +152,9 @@ export default class displayRelatedContactOnAccount extends NavigationMixin(
       this.template
         .querySelectorAll('[data-element="checkbox"]')
         .forEach((element) => {
-          element.checked = true;
+          element.checked = false;
         });
-      this.checked = false;
+      // this.checked = false;
 
       alert("Record Value" + lstRecordId);
       //this.checkBoxField = event.target.checked;
@@ -186,12 +206,12 @@ export default class displayRelatedContactOnAccount extends NavigationMixin(
   }
 
   handleCreate(event) {
-    this.recordId = this.searchKey;
+    /*this.recordId = this.searchKey;*/
     event.preventDefault();
 
     // querying the record edit form and submiting fields to form
     this.template
-      .querySelector("slds-modal__content")
+      .querySelector("lightning-record-edit-form")
       .submit(event.detail.fields);
 
     // closing modal
@@ -201,11 +221,56 @@ export default class displayRelatedContactOnAccount extends NavigationMixin(
     this.dispatchEvent(
       new ShowToastEvent({
         title: "Success!!",
-        message: " Contact updated Successfully!!.",
+        message: " Contact Created Successfully!!.",
         variant: "success"
       })
     );
     this.dispatchEvent(event);
+  }
+
+  handleNameChange(event) {
+    this.contactId = undefined;
+    this.name = event.target.value;
+  }
+
+  handleEmailChange(event) {
+    this.email = event.target.value;
+  }
+
+  handlePhoneChange(event) {
+    this.phone = event.target.value;
+  }
+
+  createContact() {
+    const fields = {};
+    fields[NAME_FIELD.fieldApiName] = this.name;
+    fields[EMAIL_FIELD.fieldApiName] = this.email;
+    fields[PHONE_FIELD.fieldApiName] = this.phone;
+    fields[ACCOUNTID_FIELD.fieldApiName] = this.recordId;
+    const recordInput = { apiName: CONTACT_OBJECT.objectApiName, fields };
+    createRecord(recordInput)
+      .then((contact) => {
+        this.contactId = contact.id;
+        this.dispatchEvent(
+          new ShowToastEvent({
+            title: "Success",
+            message: "Contact created",
+            variant: "success"
+          })
+        );
+        this.handleSuccess(this.contacts);
+      })
+      .catch((error) => {
+        this.dispatchEvent(
+          new ShowToastEvent({
+            title: "Error creating record",
+            message: error.message,
+            variant: "error"
+          })
+        );
+      });
+    // eval("$A.get('e.force:refreshView').fire();");
+    this.bShowModal = false;
   }
 
   /*forceRefreshView() {
