@@ -147,23 +147,32 @@ export default class displayRelatedContactOnAccount extends NavigationMixin(
 
   handleCheckBoxChange(event) {
     this.recordId = event.target.value;
-    alert("record" + this.recordId);
-    updateCheckbox({ lstRecordId: this.recordId }).then(() => {
-      this.template
+   // alert("record" + this.recordId);
+    // updateCheckbox({ lstRecordId: this.recordId }).then(() => {
+    Array.from(this.template.querySelectorAll("lightning-input")).forEach(
+      (element) => {
+        element.checked = false;
+      }
+    );
+    const checkbox = this.template.querySelector(
+      'lightning-input[data-value="' + event.target.dataset.value + '"]'
+    );
+    checkbox.checked = true;
+    /*this.template
         .querySelectorAll('[data-element="checkbox"]')
         .forEach((element) => {
           element.checked = false;
-        });
-      // this.checked = false;
+        }); */
+    // this.checked = false;
 
-      alert("Record Value" + lstRecordId);
-      //this.checkBoxField = event.target.checked;
-      alert("checkbox" + this.checkBoxField);
-      /*const boxes = this.template.querySelectorAll("lightning-input");
+    //alert("Record Value" + lstRecordId);
+    //this.checkBoxField = event.target.checked;
+    alert("checkbox" + checkbox.checked);
+    /*const boxes = this.template.querySelectorAll("lightning-input");
       boxes.forEach((box) => (box.checked = event.target.name === box.name));*/
-      alert("this " + this.contacts);
-      return refreshApex(this.contacts);
-    });
+    //alert("this " + this.contacts);
+    //return refreshApex(this.contacts);
+    // });
   }
 
   editCurrentRecord(event) {

@@ -184,8 +184,8 @@
                             <th data-scope="col" title="Email">
                                 <div class="slds-truncate" title={contact.Id}>
 
-                                    <lightning-input type="checkbox" data-element="checkbox" value={contact.Id}
-                                        onchange={handleCheckBoxChange} checked={contact.Guide1__Is_Primary_Contact__c}>
+                                    <lightning-input type="checkbox" data-element="checkbox" data-value={contact.Id}
+                                        key={contact.Id} onchange={handleCheckBoxChange} checked={checked}>
                                     </lightning-input>
 
                                 </div>
